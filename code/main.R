@@ -2,7 +2,8 @@
 # Options and Libraries ---------------------------------------------------
 options(scipen = 10)
 setwd("..//data")
-pacman::p_load(bit64, data.table, h2o, h2oEnsemble, lubridate, tidyverse, sqldf)
+pacman::p_load(bit64, data.table, h2o, h2oEnsemble, lubridate, tidyverse,
+               RRF, sqldf)
 reload <- F # T to reload objects from .RDS
 
 # Run Component Scripts ---------------------------------------------------
@@ -17,8 +18,8 @@ source("fe.R")
 source("eda.R")
 } else{source("reload.R")}
 
-# Model Training + Validation
+# Model Training, Validation, Scoring
 source("model.R")
 
-# Scoring
-source("score.R")
+# Final Ensemble
+source("stack.R")
