@@ -34,6 +34,8 @@ traindf  <- as.data.frame(train)
 trainHex <- as.h2o(traindf[,colnames(traindf)%in%colnames(train_nov)])
 scoreHex <- as.h2o(props[,colnames(props)%in%colnames(train_nov)])
 
+
+
 # Oct Model -------------------------------------------------------------------
 grid_y10 <- h2o.grid("randomForest",
                      x                        = colnames(trainHex_oct),

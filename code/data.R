@@ -24,6 +24,10 @@ samp  <- fread("sample_submission.csv", header=T)
 train <- fread("train_2016.csv")
 dict  <- fread("zillow_data_dictionary.csv")
 
+saveRDS(samp, "samp.RDS")
+saveRDS(props, "props_raw.RDS")
+saveRDS(train, "train_raw.RDS")
+
 # Transform ---------------------------------------------------------------
 # Missingness by column
 missingness <- sapply(props, function(x) sum(is.na(x)))
@@ -54,8 +58,12 @@ props$propertylandusetypeid  <- as.factor(props$propertylandusetypeid)
 props$propertylandusetypeid  <- addNA(props$propertylandusetypeid)
 props$storytypeid  <- as.factor(props$storytypeid)
 props$storytypeid  <- addNA(props$storytypeid)
-props$typeconstructiontypeid  <- as.factor(props$typeconstructiontypeid)
-props$typeconstructiontypeid  <- addNA(props$typeconstructiontypeid)
+props$typeconstructiontypeid     <- as.factor(props$typeconstructiontypeid)
+props$typeconstructiontypeid     <- addNA(props$typeconstructiontypeid)
+props$propertycountylandusecode  <- as.factor(props$propertycountylandusecode)
+props$propertycountylandusecode  <- addNA(props$propertycountylandusecode)
+
+props$taxdelinquencyflag <- ifelse(props$taxdelinquencyflag=="Y",1,0)
 
 miss <- names(missingness[missingness>0])
 miss <- miss[!grepl("typeid",miss)]
@@ -72,4 +80,5 @@ for(n in miss1){
 
 sapply(props, function(x) sum(is.na(x)))
 
+saveRDS(props, "props.RDS")
 cat("Create training data set(s) from props after Feature Engineering")
