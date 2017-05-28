@@ -44,11 +44,26 @@ mean(dupe$logerror)
 mod <- glm(logerror ~ month + parcelid, data = dupe)
 summary(mod)
 
+# Density Plots -----------------------------------------------------------
+# requires train
+plot(density(train$logerror)) # Incredibly thin long tails / outliers
+plot(density(train$logerror), xlim=c(-2.5,2.5))
+plot(density(train$logerror), xlim=c(-1,1))
+lines(density(train$logerror[train$month == 10]),col="green")
+lines(density(train$logerror[train$month == 11]),col="blue")
+lines(density(train$logerror[train$month == 12]),col="purple")
+lines(density(train$logerror[train$month %in% c(10,11,12)]),col="red") # shorter peak, 11 and 12 about equal, 10 a little taller
+
+plot(density(train$logerror), xlim=c(-.5,.5))
+lines(density(samp$`201610`), col="orange")
+
 # Property Land Use -------------------------------------------------------
 aggregate(train$logerror, by=list(train$propertycountylandusecode),mean)
 
-co_codes <- sqldf("select avg(logerror) as logerror, count(1) as count from train group by propertycountylandusecode order by count desc")
+co_codes <- sqldf("select avg(logerror) as logerror, count(1) as count, propertycountylandusecode from train group by propertycountylandusecode order by count desc")
 
 co_codes      <- co_codes[co_codes$count > 50,]
 co_codes_high <- co_codes[co_codes$logerror > .01,]
 co_codes_low  <- co_codes[co_codes$logerror < -.01,]
+fwrite(co_codes_high,"co_codes_high.csv")
+fwrite(co_codes_low,"co_codes_low.csv")
